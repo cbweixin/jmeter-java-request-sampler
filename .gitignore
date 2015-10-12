@@ -4,3 +4,7 @@
 .idea/
 *.iws
 *.ipr
+
+# gradle
+.gradle/
+build/

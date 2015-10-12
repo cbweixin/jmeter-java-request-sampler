@@ -1,0 +1,45 @@
+group 'com.weixin.perftest'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'maven'
+
+
+//create a single Jar with all dependencies
+task fatJar(type: Jar) {
+  manifest {
+        attributes 'Implementation-Title': 'DispatcherLib load test',
+          'Implementation-Version': version,
+          'Main-Class': 'com.weixin.perftest.DispatcherLibLoadTest'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+compileJava {
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
+}
+
+ext {
+    jmeterVersion = '2.13'
+    dispatcherSdkVersion = '1.1.0-develop-SNAPSHOT'
+}
+
+repositories {
+    maven { url "http://fmsscm.corp.intuit.net/nexus/content/repositories/merlin-dev-snapshots" }
+    mavenLocal()
+    mavenCentral()
+    jcenter()
+    flatDir {
+        dir 'libs'
+    }
+}
+
+dependencies {
+    compile name: 'ApacheJMeter_core'
+    compile name: 'ApacheJMeter_java'
+    compile group: 'com.intuit.sb.dispatcher', name: 'dispatcher-sdk', version: dispatcherSdkVersion
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+}
